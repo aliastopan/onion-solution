@@ -18,6 +18,8 @@ builder.Host.ConfigureLogging((context, logging) =>
 builder.Host.ConfigureServices((_, services) =>
 {
     services.AddEndpointDefinitions(typeof(IEndpointDefinition).Assembly);
+    services.AddEndpointsApiExplorer();
+    services.AddSwaggerGen();
 });
 
 var app = builder.Build();

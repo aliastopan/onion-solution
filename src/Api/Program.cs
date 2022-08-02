@@ -1,4 +1,6 @@
 using Onion.Api;
+using Onion.Application;
+using Onion.Infrastructure;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,8 +17,10 @@ builder.Host.ConfigureLogging((context, logging) =>
     logging.AddSerilog();
 });
 
-builder.Host.ConfigureServices((_, services) =>
+builder.Host.ConfigureServices((context, services) =>
 {
+    services.AddApplicationServices();
+    services.AddInfrastructureServices(context.Configuration);
     services.AddEndpointDefinitions(typeof(IEndpointDefinition).Assembly);
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();

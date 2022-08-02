@@ -8,11 +8,13 @@ public class RegisterCommand
 {
     private readonly IDbContext _dbContext;
     private readonly ISecureHash _secureHash;
+    private readonly IJwtTokenGenerator _jwtTokenGenerator;
 
-    public RegisterCommand(IDbContext dbContext, ISecureHash secureHash)
+    public RegisterCommand(IDbContext dbContext, ISecureHash secureHash, IJwtTokenGenerator jwtTokenGenerator)
     {
         _dbContext = dbContext;
         _secureHash = secureHash;
+        _jwtTokenGenerator = jwtTokenGenerator;
     }
 
     public IAssertiveResult<RegisterResult> Register(RegisterDto registerDto)
@@ -39,7 +41,7 @@ public class RegisterCommand
             .Resolve(_ =>
             {
                 var user = CreateUser(registerDto);
-                var accessToken = Guid.NewGuid().ToString();
+                var accessToken = _jwtTokenGenerator.GenerateToken(user.Id, user.Username);
 
                 _dbContext.Users.Add(user);
                 _dbContext.Commit();

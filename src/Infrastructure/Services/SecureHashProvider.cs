@@ -4,7 +4,7 @@ using Onion.Application.Common.Interfaces;
 
 namespace Onion.Infrastructure.Services;
 
-public class SecureHashProvider : ISecureHash
+internal sealed class SecureHashProvider : ISecureHash
 {
     public string GenerateSalt()
     {

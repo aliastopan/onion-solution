@@ -1,6 +1,6 @@
 namespace Onion.Infrastructure.Authentication;
 
-public class JwtSettings
+internal sealed class JwtSettings
 {
     public const string SectionName = "JwtSettings";
 

@@ -7,7 +7,7 @@ using Onion.Application.Common.Interfaces;
 
 namespace Onion.Infrastructure.Authentication;
 
-public class JwtTokenGenerator : IJwtTokenGenerator
+internal sealed class JwtTokenGenerator : IJwtTokenGenerator
 {
     private readonly JwtSettings _jwtSettings;
     private readonly IDateTime _dateTime;

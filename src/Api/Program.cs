@@ -21,7 +21,7 @@ builder.Host.ConfigureServices((context, services) =>
 {
     services.AddApplicationServices();
     services.AddInfrastructureServices(context.Configuration);
-    services.AddEndpointDefinitions(typeof(IEndpointDefinition).Assembly);
+    services.AddEndpointRouting(typeof(IRouting).Assembly);
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();
 });
@@ -29,6 +29,6 @@ builder.Host.ConfigureServices((context, services) =>
 var app = builder.Build();
 
 app.UseHttpsRedirection();
-app.UseEndpointDefinitions();
+app.UseRouteEndpoint();
 
 app.Run();

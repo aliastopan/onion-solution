@@ -1,3 +1,5 @@
+using Mapster;
+using Onion.Application.Identity.Registration;
 using Onion.Contract.Identity.Registration;
 
 namespace Onion.Api.Routing.Identity;
@@ -9,16 +11,20 @@ public class RegistrationRoute : IRouting
         app.MapPost("/api/register", Register);
     }
 
-    internal IResult Register(RegisterRequest request)
+    internal IResult Register(RegisterCommand registerCommand, RegisterRequest request)
     {
-        var response = new RegisterResponse(
-            Guid.NewGuid(),
-            request.Username,
-            request.Email,
-            request.Password,
-            "s4lt",
-            Guid.NewGuid().ToString());
+        var registerDto = request.Adapt<RegisterDto>();
+        var registration = registerCommand.Register(registerDto);
 
-        return Results.Ok(response);
+        if(registration.Success)
+        {
+            var registerResult = registration.Value;
+            var response = registerResult.Adapt<RegisterResponse>();
+            return Results.Ok(response);
+        }
+        else
+        {
+            return Results.UnprocessableEntity();
+        }
     }
 }

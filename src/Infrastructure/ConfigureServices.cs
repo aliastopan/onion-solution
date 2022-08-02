@@ -21,6 +21,8 @@ public static class ConfigureServices
             options.UseInMemoryDatabase(nameof(ApplicationDbContext));
         });
 
+        services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
+
         return services;
     }
 }

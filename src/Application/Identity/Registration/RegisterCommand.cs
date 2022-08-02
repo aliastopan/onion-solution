@@ -41,7 +41,7 @@ public class RegisterCommand
             .Resolve(_ =>
             {
                 var user = CreateUser(registerDto);
-                var accessToken = _jwtTokenGenerator.GenerateToken(user.Id, user.Username);
+                var accessToken = _jwtTokenGenerator.GenerateToken(user.Id, user.Username, user.Role);
 
                 _dbContext.Users.Add(user);
                 _dbContext.Commit();

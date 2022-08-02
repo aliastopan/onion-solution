@@ -15,16 +15,16 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         _dateTime = dateTime;
     }
 
-    public string GenerateToken(Guid id, string username)
+    public string GenerateToken(Guid id, string username, string role)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super-secret-key"));
         var credential = new SigningCredentials(key, SecurityAlgorithms.HmacSha384);
-
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, id.ToString()),
             new Claim(JwtRegisteredClaimNames.UniqueName, username),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.Role, role),
         };
 
         var jwtToken = new JwtSecurityToken(

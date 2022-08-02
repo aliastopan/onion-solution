@@ -1,4 +1,5 @@
 using AssertiveResults;
+using Onion.Application.Common.Errors;
 using Onion.Application.Common.Interfaces;
 using Onion.Domain.Entities.Identity;
 
@@ -29,14 +30,14 @@ public class RegisterCommand
             {
                 var userQuery = _dbContext.Users.FirstOrDefault(x => x.Username == registerDto.Username);
                 var available = userQuery is null;
-                user.Should.Satisfy(available);
+                user.Should.Satisfy(available).WithError(Error.Registration.UsernameTaken);
             })
             .Break()
             .Assert(email =>
             {
                 var emailQuery =_dbContext.Users.FirstOrDefault(x => x.Email == registerDto.Email);
                 var available = emailQuery is null;
-                email.Should.Satisfy(available);
+                email.Should.Satisfy(available).WithError(Error.Registration.EmailInUse);
             })
             .Resolve(_ =>
             {

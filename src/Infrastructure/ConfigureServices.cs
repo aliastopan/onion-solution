@@ -12,6 +12,8 @@ public static class ConfigureServices
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<ISecureHash, SecureHashProvider>();
+        services.AddSingleton<IDateTime, DateTimeProvider>();
+
         services.AddDbContext<IDbContext, ApplicationDbContext>(options =>
         {
             options.UseInMemoryDatabase(nameof(ApplicationDbContext));

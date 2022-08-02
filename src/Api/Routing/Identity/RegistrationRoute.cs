@@ -1,4 +1,7 @@
 using Mapster;
+using System.Net;
+using Microsoft.AspNetCore.Mvc;
+using Onion.Api.Extensions;
 using Onion.Application.Identity.Registration;
 using Onion.Contract.Identity.Registration;
 
@@ -11,7 +14,8 @@ public class RegistrationRoute : IRouting
         app.MapPost("/api/register", Register);
     }
 
-    internal IResult Register(RegisterCommand registerCommand, RegisterRequest request)
+    internal IResult Register([FromServices] RegisterCommand registerCommand,
+        RegisterRequest request, HttpContext httpContext)
     {
         var registerDto = request.Adapt<RegisterDto>();
         var registration = registerCommand.Register(registerDto);
@@ -24,7 +28,15 @@ public class RegistrationRoute : IRouting
         }
         else
         {
-            return Results.UnprocessableEntity();
+            var problemDetails = new ProblemDetails()
+            {
+                Title = registration.LastError.Code,
+                Detail = registration.LastError.Description,
+                Status = (int)HttpStatusCode.UnprocessableEntity,
+                Instance = "/api/register"
+            };
+            problemDetails.AddTraceId(httpContext);
+            return Results.Problem(problemDetails);
         }
     }
 }

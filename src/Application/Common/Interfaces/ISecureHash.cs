@@ -1,6 +1,6 @@
-namespace Onion.Application.Common.Services;
+namespace Onion.Application.Common.Interfaces;
 
-public interface ISecureHashProvider
+public interface ISecureHash
 {
     string GenerateSalt();
     string HashPassword(string password, string salt);

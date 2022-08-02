@@ -1,10 +1,10 @@
 using System.Security.Cryptography;
 using System.Text;
-using Onion.Application.Common.Services;
+using Onion.Application.Common.Interfaces;
 
 namespace Onion.Infrastructure.Services;
 
-public class SecureHashProvider : ISecureHashProvider
+public class SecureHashProvider : ISecureHash
 {
     public string GenerateSalt()
     {

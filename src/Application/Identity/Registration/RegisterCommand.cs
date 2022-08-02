@@ -1,6 +1,5 @@
 using AssertiveResults;
 using Onion.Application.Common.Interfaces;
-using Onion.Application.Common.Services;
 using Onion.Domain.Entities.Identity;
 
 namespace Onion.Application.Identity.Registration;
@@ -8,9 +7,9 @@ namespace Onion.Application.Identity.Registration;
 public class RegisterCommand
 {
     private readonly IDbContext _dbContext;
-    private readonly ISecureHashProvider _secureHash;
+    private readonly ISecureHash _secureHash;
 
-    public RegisterCommand(IDbContext dbContext, ISecureHashProvider secureHash)
+    public RegisterCommand(IDbContext dbContext, ISecureHash secureHash)
     {
         _dbContext = dbContext;
         _secureHash = secureHash;

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Onion.Application.Common.Interfaces;
+using Onion.Infrastructure.Authentication;
 using Onion.Infrastructure.Persistence;
 using Onion.Infrastructure.Services;
 
@@ -13,6 +14,7 @@ public static class ConfigureServices
     {
         services.AddSingleton<ISecureHash, SecureHashProvider>();
         services.AddSingleton<IDateTime, DateTimeProvider>();
+        services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
 
         services.AddDbContext<IDbContext, ApplicationDbContext>(options =>
         {

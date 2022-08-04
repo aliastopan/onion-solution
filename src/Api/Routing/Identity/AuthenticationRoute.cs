@@ -3,7 +3,7 @@ using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Onion.Api.Extensions;
 using Onion.Application.Identity.Authentication;
-using Onion.Contract.Identity.Authentication;
+using Onion.Contracts.Identity.Authentication;
 
 namespace Onion.Api.Routing.Identity;
 

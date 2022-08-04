@@ -1,4 +1,4 @@
-namespace Onion.Contract.Identity.Registration;
+namespace Onion.Contracts.Identity.Registration;
 
 public record RegisterResponse(
     Guid Id,

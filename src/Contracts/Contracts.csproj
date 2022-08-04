@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>Onion.Contract</RootNamespace>
-    <AssemblyName>Onion.Contract</AssemblyName>
+    <RootNamespace>Onion.Contracts</RootNamespace>
+    <AssemblyName>Onion.Contracts</AssemblyName>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>

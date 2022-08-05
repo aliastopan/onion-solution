@@ -20,19 +20,17 @@ public class RegisterCommand
 
     public IAssertiveResult<RegisterResult> Register(RegisterDto registerDto)
     {
-        var result = Assertive.Result()
+        var result = Assertive.Result<RegisterResult>()
             .Assert(password =>
             {
-                password.RegularExpression.Match(registerDto.Password).Validates.PasswordStrength();
+                password.RegularExpression.Validates(registerDto.Password).Format.StrongPassword();
             })
-            .Break()
             .Assert(user =>
             {
                 var userQuery = _dbContext.Users.FirstOrDefault(x => x.Username == registerDto.Username);
                 var available = userQuery is null;
                 user.Should.Satisfy(available).WithError(Error.Registration.UsernameTaken);
             })
-            .Break()
             .Assert(email =>
             {
                 var emailQuery =_dbContext.Users.FirstOrDefault(x => x.Email == registerDto.Email);

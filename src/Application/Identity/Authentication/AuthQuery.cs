@@ -20,13 +20,12 @@ public class AuthQuery
     public IAssertiveResult<AuthResult> Authenticate(AuthDto authDto)
     {
         var user = _dbContext.Users.FirstOrDefault(x => x.Username == authDto.Username);
-        var authResult = Assertive.Result()
+        var authResult = Assertive.Result<AuthResult>()
             .Assert(identity =>
             {
                 bool exist = user is not null;
                 identity.Should.Satisfy(exist).WithError(Error.Authentication.UserNotFound);
             })
-            .Break()
             .Assert(password =>
             {
                 bool verify = _secureHash.VerifyPassword(authDto.Password, user!.Salt, user.Password);

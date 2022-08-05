@@ -28,7 +28,7 @@ public class AuthQuery
             })
             .Assert(password =>
             {
-                bool verify = _secureHash.VerifyPassword(authDto.Password, user!.Salt, user.Password);
+                bool verify = _secureHash.VerifyPassword(authDto.Password, user!.Salt, user.HashedPassword);
                 password.Should.Satisfy(verify).WithError(Error.Authentication.IncorrectPassword);
             })
             .Resolve(_ =>

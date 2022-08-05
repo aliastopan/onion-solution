@@ -49,7 +49,7 @@ public class RegisterCommand
                     user.Id,
                     user.Username,
                     user.Email,
-                    user.Password,
+                    user.HashedPassword,
                     user.Salt,
                     accessToken);
             });

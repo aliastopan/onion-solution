@@ -10,9 +10,11 @@ namespace Onion.Api.Routing.Identity;
 
 public class AuthenticationRoute : IRouting
 {
+    private const string API_AUTH = "api/auth";
+
     public void MapRoute(WebApplication app)
     {
-        app.MapPost("api/auth", Auth);
+        app.MapPost(API_AUTH, Auth);
     }
 
     internal async Task<IResult> Auth([FromServices] ISender sender,
@@ -29,14 +31,8 @@ public class AuthenticationRoute : IRouting
         }
         else
         {
-            var problemDetails = new ProblemDetails()
-            {
-                Title = authentication.FirstError.Code,
-                Detail = authentication.FirstError.Description,
-                Status = (int)HttpStatusCode.Unauthorized,
-                Instance = "/api/auth"
-            };
-            problemDetails.AddTraceId(httpContext);
+            int code = (int)HttpStatusCode.UnprocessableEntity;
+            var problemDetails = authentication.ToProblemDetails(API_AUTH, code, httpContext);
             return Results.Problem(problemDetails);
         }
     }

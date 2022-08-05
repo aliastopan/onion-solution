@@ -1,31 +1,36 @@
 using AssertiveResults;
+using MediatR;
 using Onion.Application.Common.Errors;
 using Onion.Application.Common.Interfaces;
 using Onion.Domain.Entities.Identity;
 
-namespace Onion.Application.Identity.Registration;
+namespace Onion.Application.Identity.Commands.Registration;
 
-public class RegisterCommand
+public class RegisterCommandHandler
+    : IRequestHandler<RegisterCommand, IAssertiveResult<RegisterResult>>
 {
     private readonly IDbContext _dbContext;
     private readonly ISecureHash _secureHash;
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
 
-    public RegisterCommand(IDbContext dbContext, ISecureHash secureHash, IJwtTokenGenerator jwtTokenGenerator)
+    public RegisterCommandHandler(
+        IDbContext dbContext,
+        ISecureHash secureHash,
+        IJwtTokenGenerator jwtTokenGenerator)
     {
         _dbContext = dbContext;
         _secureHash = secureHash;
         _jwtTokenGenerator = jwtTokenGenerator;
     }
 
-    public IAssertiveResult<RegisterResult> Register(RegisterDto registerDto)
+    public async Task<IAssertiveResult<RegisterResult>> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
-        var step1 = ValidateDto(registerDto);
-        var step2 = ValidateUsername(step1, registerDto.Username);
-        var step3 = ValidateEmail(step2, registerDto.Email);
+        var step1 = ValidateRequest(request);
+        var step2 = ValidateUsername(step1, request.Username);
+        var step3 = ValidateEmail(step2, request.Email);
         var step4 = step3.Override<RegisterResult>();
         var registerResult = step4.Resolve(_ => {
-            var user = CreateUser(registerDto);
+            var user = CreateUser(request);
             var accessToken = _jwtTokenGenerator.GenerateToken(user.Id, user.Username, user.Role);
 
             _dbContext.Users.Add(user);
@@ -40,16 +45,17 @@ public class RegisterCommand
                 accessToken);
         });
 
+        await Task.CompletedTask;
         return registerResult;
     }
 
     // STEP 1
-    private static IResult ValidateDto(RegisterDto registerDto)
+    private static IResult ValidateRequest(RegisterCommand request)
     {
         return Assertive.Result()
-            .Assert(dto => dto.RegularExpression.Validate(registerDto.Username).Format.Username())
-            .Assert(dto => dto.RegularExpression.Validate(registerDto.Password).Format.StrongPassword())
-            .Assert(dto => dto.RegularExpression.Validate(registerDto.Email).Format.EmailAddress());
+            .Assert(dto => dto.RegularExpression.Validate(request.Username).Format.Username())
+            .Assert(dto => dto.RegularExpression.Validate(request.Password).Format.StrongPassword())
+            .Assert(dto => dto.RegularExpression.Validate(request.Email).Format.EmailAddress());
     }
 
     // STEP 2
@@ -72,10 +78,10 @@ public class RegisterCommand
         });
     }
 
-    private User CreateUser(RegisterDto dto)
+    private User CreateUser(RegisterCommand request)
     {
-        string password = _secureHash.HashPassword(dto.Password, out string salt);
+        string password = _secureHash.HashPassword(request.Password, out string salt);
         string role = "standard";
-        return new User(dto.Username, dto.Email, role, password, salt);
+        return new User(request.Username, request.Email, role, password, salt);
     }
 }

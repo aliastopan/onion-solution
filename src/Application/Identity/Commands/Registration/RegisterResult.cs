@@ -1,4 +1,4 @@
-namespace Onion.Application.Identity.Registration;
+namespace Onion.Application.Identity.Commands.Registration;
 
 public record RegisterResult(
     Guid Id,

@@ -1,8 +1,9 @@
-using Mapster;
 using System.Net;
+using Mapster;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Onion.Api.Extensions;
-using Onion.Application.Identity.Authentication;
+using Onion.Application.Identity.Queries.Authentication;
 using Onion.Contracts.Identity.Authentication;
 
 namespace Onion.Api.Routing.Identity;
@@ -14,11 +15,11 @@ public class AuthenticationRoute : IRouting
         app.MapPost("api/auth", Auth);
     }
 
-    internal IResult Auth([FromServices] AuthQuery authQuery,
-        HttpContext httpContext, AuthRequest authRequest)
+    internal async Task<IResult> Auth([FromServices] ISender sender,
+        AuthRequest authRequest, HttpContext httpContext)
     {
-        var authDto = authRequest.Adapt<AuthDto>();
-        var authentication = authQuery.Authenticate(authDto);
+        var query = authRequest.Adapt<AuthQuery>();
+        var authentication = await sender.Send(query);
 
         if(authentication.Success)
         {

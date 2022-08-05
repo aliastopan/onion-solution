@@ -1,8 +1,9 @@
-using Mapster;
 using System.Net;
+using Mapster;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Onion.Api.Extensions;
-using Onion.Application.Identity.Registration;
+using Onion.Application.Identity.Commands.Registration;
 using Onion.Contracts.Identity.Registration;
 
 namespace Onion.Api.Routing.Identity;
@@ -14,11 +15,11 @@ public class RegistrationRoute : IRouting
         app.MapPost("/api/register", Register);
     }
 
-    internal IResult Register([FromServices] RegisterCommand registerCommand,
+    internal async Task<IResult> Register([FromServices] ISender sender,
         RegisterRequest request, HttpContext httpContext)
     {
-        var registerDto = request.Adapt<RegisterDto>();
-        var registration = registerCommand.Register(registerDto);
+        var command = request.Adapt<RegisterCommand>();
+        var registration = await sender.Send(command);
 
         if(registration.Success)
         {

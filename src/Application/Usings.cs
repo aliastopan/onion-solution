@@ -1,0 +1,1 @@
+global using Onion.Application.Common.Extensions.Repositories;

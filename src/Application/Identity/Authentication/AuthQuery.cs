@@ -20,7 +20,7 @@ public class AuthQuery
 
     public IAssertiveResult<AuthResult> Authenticate(AuthDto authDto)
     {
-        var user = _dbContext.Users.FirstOrDefault(x => x.Username == authDto.Username);
+        var user = _dbContext.Users.Search(authDto.Username);
         var step1 = VerifyUser(user);
         var step2 = VerifyPassword(step1, authDto.Password, user?.Salt!, user?.HashedPassword!);
         var step3 = step2.Override<AuthResult>();

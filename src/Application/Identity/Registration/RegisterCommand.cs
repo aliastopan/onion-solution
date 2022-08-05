@@ -56,8 +56,8 @@ public class RegisterCommand
     private IResult ValidateUsername(IResult result, string username)
     {
         return result.Assert(ctx => {
-            var userQuery = _dbContext.Users.FirstOrDefault(x => x.Username == username);
-            var available = userQuery is null;
+            var searchResult = _dbContext.Users.Search(username);
+            var available = searchResult is null;
             ctx.Should.Satisfy(available).WithError(Error.Registration.UsernameTaken);
         });
     }
@@ -66,8 +66,8 @@ public class RegisterCommand
     private IResult ValidateEmail(IResult result, string email)
     {
         return result.Assert(ctx => {
-            var emailQuery = _dbContext.Users.FirstOrDefault(x => x.Email == email);
-            var available = emailQuery is null;
+            var searchResult = _dbContext.Users.SearchByEmail(email);
+            var available = searchResult is null;
             ctx.Should.Satisfy(available).WithError(Error.Registration.EmailInUse);
         });
     }

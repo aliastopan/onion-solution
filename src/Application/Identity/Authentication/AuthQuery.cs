@@ -1,6 +1,7 @@
 using AssertiveResults;
 using Onion.Application.Common.Errors;
 using Onion.Application.Common.Interfaces;
+using Onion.Domain.Entities.Identity;
 
 namespace Onion.Application.Identity.Authentication;
 
@@ -20,23 +21,33 @@ public class AuthQuery
     public IAssertiveResult<AuthResult> Authenticate(AuthDto authDto)
     {
         var user = _dbContext.Users.FirstOrDefault(x => x.Username == authDto.Username);
-        var authResult = Assertive.Result<AuthResult>()
-            .Assert(identity =>
-            {
-                bool exist = user is not null;
-                identity.Should.Satisfy(exist).WithError(Error.Authentication.UserNotFound);
-            })
-            .Assert(password =>
-            {
-                bool verify = _secureHash.VerifyPassword(authDto.Password, user!.Salt, user.HashedPassword);
-                password.Should.Satisfy(verify).WithError(Error.Authentication.IncorrectPassword);
-            })
-            .Resolve(_ =>
-            {
-                var accessToken = _jwtTokenGenerator.GenerateToken(user!.Id, user.Username, user.Role);
-                return new AuthResult(user!.Id, user.Username, accessToken);
-            });
+        var step1 = VerifyUser(user);
+        var step2 = VerifyPassword(step1, authDto.Password, user?.Salt!, user?.HashedPassword!);
+        var step3 = step2.Override<AuthResult>();
+        var authResult = step3.Resolve(_ => {
+            var accessToken = _jwtTokenGenerator.GenerateToken(user!.Id, user.Username, user.Role);
+            return new AuthResult(user!.Id, user.Username, accessToken);
+        });
 
         return authResult;
+    }
+
+    // STEP 1
+    private static IResult VerifyUser(User? user)
+    {
+        return Assertive.Result()
+            .Assert(ctx => {
+                bool exist = user is not null;
+                ctx.Should.Satisfy(exist).WithError(Error.Authentication.UserNotFound);
+            });
+    }
+
+    // STEP 2
+    private IResult VerifyPassword(IResult result, string password, string salt, string hashedPassword)
+    {
+        return result.Assert(ctx => {
+            bool verify = _secureHash.VerifyPassword(password, salt, hashedPassword);
+            ctx.Should.Satisfy(verify).WithError(Error.Authentication.IncorrectPassword);
+        });
     }
 }

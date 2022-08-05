@@ -31,8 +31,8 @@ public class AuthenticationRoute : IRouting
         {
             var problemDetails = new ProblemDetails()
             {
-                Title = authentication.LastError.Code,
-                Detail = authentication.LastError.Description,
+                Title = authentication.FirstError.Code,
+                Detail = authentication.FirstError.Description,
                 Status = (int)HttpStatusCode.Unauthorized,
                 Instance = "/api/auth"
             };

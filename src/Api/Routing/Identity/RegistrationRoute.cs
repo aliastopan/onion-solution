@@ -31,8 +31,8 @@ public class RegistrationRoute : IRouting
         {
             var problemDetails = new ProblemDetails()
             {
-                Title = registration.LastError.Code,
-                Detail = registration.LastError.Description,
+                Title = registration.FirstError.Code,
+                Detail = registration.FirstError.Description,
                 Status = (int)HttpStatusCode.UnprocessableEntity,
                 Instance = "/api/register"
             };

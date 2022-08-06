@@ -4,7 +4,8 @@ namespace Onion.Api.Extensions;
 
 internal static class EndpointExtensions
 {
-    internal static IServiceCollection AddEndpoints(this IServiceCollection services, params Assembly[] assemblies)
+    internal static IServiceCollection AddEndpoints(this IServiceCollection services,
+        params Assembly[] assemblies)
     {
         var endpoints = new List<IEndpoint>();
         foreach(var assembly in assemblies)

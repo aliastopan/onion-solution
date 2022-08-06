@@ -11,7 +11,8 @@ namespace Onion.Infrastructure;
 
 public static class ConfigureServices
 {
-    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,
+        IConfiguration configuration)
     {
         services.AddSingleton<ISecureHash, SecureHashProvider>();
         services.AddSingleton<IDateTime, DateTimeProvider>();
@@ -23,7 +24,8 @@ public static class ConfigureServices
         return services;
     }
 
-    private static IServiceCollection AddInfrastructureDbContext(this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection AddInfrastructureDbContext(this IServiceCollection services,
+        IConfiguration configuration)
     {
         if(configuration.UseInMemoryDatabase())
         {

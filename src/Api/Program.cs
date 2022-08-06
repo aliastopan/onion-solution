@@ -22,7 +22,7 @@ builder.Host.ConfigureServices((context, services) =>
     services.AddApplicationServices();
     services.AddInfrastructureServices(context.Configuration);
     services.AddEndpoints(typeof(IEndpoint).Assembly);
-    services.AddJwtAuthentication(context.Configuration);
+    services.AddJwtAuthentication();
     services.AddJwtAuthorization();
 });
 

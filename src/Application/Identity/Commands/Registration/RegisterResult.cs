@@ -2,8 +2,9 @@ namespace Onion.Application.Identity.Commands.Registration;
 
 public record RegisterResult(
     Guid Id,
-    string Email,
     string Username,
+    string Email,
+    string Role,
     string Password,
     string Salt,
     string AccessToken);

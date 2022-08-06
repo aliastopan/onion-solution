@@ -37,6 +37,7 @@ public class RegisterCommandHandler
                 user.Id,
                 user.Username,
                 user.Email,
+                user.Role,
                 user.HashedPassword,
                 user.Salt,
                 accessToken);

@@ -1,13 +1,13 @@
 using Onion.Application.Identity.Commands.Registration;
 using Onion.Contracts.Identity.Registration;
 
-namespace Onion.Api.Routing.Identity;
+namespace Onion.Api.Endpoints.Identity;
 
-public class RegistrationRoute : IRouting
+public class RegistrationEndpoint : IEndpoint
 {
     private const string API_REGISTER = "/api/register";
 
-    public void MapRoute(WebApplication app)
+    public void DefineEndpoints(WebApplication app)
     {
         app.MapPost(API_REGISTER, Register);
     }

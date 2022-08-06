@@ -1,13 +1,13 @@
 using Onion.Application.Identity.Queries.Authentication;
 using Onion.Contracts.Identity.Authentication;
 
-namespace Onion.Api.Routing.Identity;
+namespace Onion.Api.Endpoints.Identity;
 
-public class AuthenticationRoute : IRouting
+public class AuthenticationEndpoint : IEndpoint
 {
     private const string API_AUTH = "api/auth";
 
-    public void MapRoute(WebApplication app)
+    public void DefineEndpoints(WebApplication app)
     {
         app.MapPost(API_AUTH, Auth);
     }

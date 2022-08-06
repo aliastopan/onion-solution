@@ -1,4 +1,3 @@
-using Onion.Api;
 using Onion.Application;
 using Onion.Infrastructure;
 using Serilog;
@@ -21,7 +20,7 @@ builder.Host.ConfigureServices((context, services) =>
 {
     services.AddApplicationServices();
     services.AddInfrastructureServices(context.Configuration);
-    services.AddEndpointRouting(typeof(IRouting).Assembly);
+    services.AddEndpoints(typeof(IEndpoint).Assembly);
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();
 });
@@ -29,6 +28,6 @@ builder.Host.ConfigureServices((context, services) =>
 var app = builder.Build();
 
 app.UseHttpsRedirection();
-app.UseRouteEndpoint();
+app.UseEndpoints();
 
 app.Run();

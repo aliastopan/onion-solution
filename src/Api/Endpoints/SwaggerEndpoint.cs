@@ -1,8 +1,8 @@
-namespace Onion.Api.Routing;
+namespace Onion.Api.Endpoints;
 
-public class SwaggerRoute : IRouting
+public class SwaggerEndpoint : IEndpoint
 {
-    public void MapRoute(WebApplication app)
+    public void DefineEndpoints(WebApplication app)
     {
         if(app.Environment.IsProduction())
             return;

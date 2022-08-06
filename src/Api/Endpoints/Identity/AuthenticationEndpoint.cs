@@ -5,11 +5,11 @@ namespace Onion.Api.Endpoints.Identity;
 
 public class AuthenticationEndpoint : IEndpoint
 {
-    private const string API_AUTH = "api/auth";
+    private const string AuthUri = "api/auth";
 
     public void DefineEndpoints(WebApplication app)
     {
-        app.MapPost(API_AUTH, Auth);
+        app.MapPost(AuthUri, Auth);
     }
 
     internal async Task<IResult> Auth([FromServices] ISender sender,
@@ -27,7 +27,7 @@ public class AuthenticationEndpoint : IEndpoint
         else
         {
             int code = (int)HttpStatusCode.UnprocessableEntity;
-            var problemDetails = authentication.ToProblemDetails(API_AUTH, code, httpContext);
+            var problemDetails = authentication.ToProblemDetails(AuthUri, code, httpContext);
             return Results.Problem(problemDetails);
         }
     }

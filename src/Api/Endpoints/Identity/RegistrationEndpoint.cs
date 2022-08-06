@@ -5,11 +5,11 @@ namespace Onion.Api.Endpoints.Identity;
 
 public class RegistrationEndpoint : IEndpoint
 {
-    private const string API_REGISTER = "/api/register";
+    private const string RegisterUri = "/api/register";
 
     public void DefineEndpoints(WebApplication app)
     {
-        app.MapPost(API_REGISTER, Register);
+        app.MapPost(RegisterUri, Register);
     }
 
     internal async Task<IResult> Register([FromServices] ISender sender,
@@ -27,7 +27,7 @@ public class RegistrationEndpoint : IEndpoint
         else
         {
             int code = (int)HttpStatusCode.UnprocessableEntity;
-            var problemDetails = registration.ToProblemDetails(API_REGISTER, code, httpContext);
+            var problemDetails = registration.ToProblemDetails(RegisterUri, code, httpContext);
             return Results.Problem(problemDetails);
         }
     }

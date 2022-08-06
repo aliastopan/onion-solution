@@ -1,6 +1,6 @@
 using ErrorResult = AssertiveResults.Errors.Error;
 
-namespace Onion.Application.Common.Errors;
+namespace Onion.Application.Common.Errors.Identity;
 
 public static partial class Error
 {

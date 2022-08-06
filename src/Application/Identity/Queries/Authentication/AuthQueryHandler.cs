@@ -1,6 +1,6 @@
 using AssertiveResults;
 using MediatR;
-using Onion.Application.Common.Errors;
+using Onion.Application.Common.Errors.Identity;
 using Onion.Application.Common.Interfaces;
 using Onion.Domain.Entities.Identity;
 

@@ -1,6 +1,3 @@
-using AssertiveResults;
-using MediatR;
-
 namespace Onion.Application.Identity.Queries.Authentication;
 
 public record AuthQuery(

@@ -1,8 +1,3 @@
-using System.Net;
-using Mapster;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Onion.Api.Extensions;
 using Onion.Application.Identity.Queries.Authentication;
 using Onion.Contracts.Identity.Authentication;
 

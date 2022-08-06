@@ -1,5 +1,6 @@
 namespace Onion.Contracts.Identity.Authentication;
 
-public record AuthRequest(
+public record LoginResponse(
+    Guid Id,
     string Username,
-    string Password);
+    string AccessToken);

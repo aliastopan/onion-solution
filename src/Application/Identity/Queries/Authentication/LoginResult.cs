@@ -1,6 +1,6 @@
 namespace Onion.Application.Identity.Queries.Authentication;
 
-public record AuthResult(
+public record LoginResult(
     Guid Id,
     string Username,
     string AccessToken);

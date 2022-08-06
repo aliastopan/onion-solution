@@ -21,7 +21,7 @@ internal sealed class JwtTokenGenerator : IJwtTokenGenerator
     public string GenerateToken(Guid id, string username, string role)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret));
-        var credential = new SigningCredentials(key, SecurityAlgorithms.HmacSha384);
+        var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha384);
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, id.ToString()),
@@ -35,7 +35,7 @@ internal sealed class JwtTokenGenerator : IJwtTokenGenerator
             audience: _jwtSettings.Audience,
             expires: _dateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
             claims: claims,
-            signingCredentials: credential);
+            signingCredentials: signingCredentials);
 
         return new JwtSecurityTokenHandler().WriteToken(jwtToken);
     }

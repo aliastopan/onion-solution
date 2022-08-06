@@ -1,3 +1,4 @@
+using Onion.Api.Security;
 using Onion.Application;
 using Onion.Infrastructure;
 using Serilog;
@@ -21,11 +22,16 @@ builder.Host.ConfigureServices((context, services) =>
     services.AddApplicationServices();
     services.AddInfrastructureServices(context.Configuration);
     services.AddEndpoints(typeof(IEndpoint).Assembly);
+    services.AddJwtAuthentication(context.Configuration);
+    services.AddJwtAuthorization();
 });
 
 var app = builder.Build();
 
 app.UseHttpsRedirection();
 app.UseEndpoints();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.Run();

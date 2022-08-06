@@ -9,7 +9,7 @@ public class RegistrationEndpoint : IEndpoint
 
     public void DefineEndpoints(WebApplication app)
     {
-        app.MapPost(RegisterUri, Register);
+        app.MapPost(RegisterUri, Register).AllowAnonymous();
     }
 
     internal async Task<IResult> Register([FromServices] ISender sender,

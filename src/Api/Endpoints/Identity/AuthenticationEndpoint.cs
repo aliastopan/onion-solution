@@ -9,7 +9,7 @@ public class AuthenticationEndpoint : IEndpoint
 
     public void DefineEndpoints(WebApplication app)
     {
-        app.MapPost(LoginUri, Login);
+        app.MapPost(LoginUri, Login).AllowAnonymous();
     }
 
     internal async Task<IResult> Login([FromServices] ISender sender,

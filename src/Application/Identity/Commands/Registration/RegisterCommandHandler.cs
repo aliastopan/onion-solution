@@ -37,7 +37,7 @@ public class RegisterCommandHandler
                 user.Id,
                 user.Username,
                 user.Email,
-                user.Role,
+                user.Role.Name,
                 user.HashedPassword,
                 user.Salt,
                 accessToken);
@@ -79,7 +79,6 @@ public class RegisterCommandHandler
     private User CreateUser(RegisterCommand request)
     {
         string password = _secureHash.HashPassword(request.Password, out string salt);
-        string role = "standard";
-        return new User(request.Username, request.Email, role, password, salt);
+        return new User(request.Username, request.Email, password, salt);
     }
 }

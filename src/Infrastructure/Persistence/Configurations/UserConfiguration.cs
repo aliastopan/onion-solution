@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Onion.Domain.Entities.Identity;
+using Onion.Domain.Enums;
 
 namespace Onion.Infrastructure.Persistence.Configurations;
 
@@ -28,7 +29,9 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(x => x.Role)
             .HasColumnName("role")
-            .HasMaxLength(16)
+            .HasConversion(
+                v => v.Value,
+                v => UserRole.FromValue(v))
             .IsRequired();
 
         builder.Property(x => x.IsVerified)

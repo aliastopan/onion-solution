@@ -21,8 +21,6 @@ builder.Host.ConfigureServices((context, services) =>
     services.AddApplicationServices();
     services.AddInfrastructureServices(context.Configuration);
     services.AddEndpoints(typeof(IEndpoint).Assembly);
-    services.AddEndpointsApiExplorer();
-    services.AddSwaggerGen();
 });
 
 var app = builder.Build();

@@ -1,6 +1,6 @@
 namespace Onion.Api.Endpoints;
 
-public class SwaggerEndpoint : IEndpoint
+public class SwaggerEndpoint : IEndpoint, IService
 {
     public void DefineEndpoints(WebApplication app)
     {
@@ -9,5 +9,11 @@ public class SwaggerEndpoint : IEndpoint
 
         app.UseSwagger();
         app.UseSwaggerUI();
+    }
+
+    public void DefineServices(IServiceCollection services)
+    {
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen();
     }
 }

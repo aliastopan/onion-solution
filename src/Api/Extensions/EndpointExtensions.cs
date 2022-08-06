@@ -16,6 +16,13 @@ internal static class EndpointExtensions
             );
         }
 
+        endpoints.ForEach(endpoint => {
+            if(endpoint is IService service)
+            {
+                service.DefineServices(services);
+            }
+        });
+
         services.AddSingleton(endpoints as IReadOnlyCollection<IEndpoint>);
         return services;
     }

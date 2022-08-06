@@ -14,4 +14,9 @@ public static class UserRepositoryExtensions
     {
         return users.FirstOrDefault(x => x.Email == email);
     }
+
+    public static IReadOnlyCollection<User> GetAll(this DbSet<User> users)
+    {
+        return users.ToList().AsReadOnly();
+    }
 }

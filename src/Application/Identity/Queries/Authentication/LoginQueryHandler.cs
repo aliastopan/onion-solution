@@ -27,7 +27,7 @@ public class LoginQueryHandler
         var step2 = VerifyPassword(step1, request.Password, user?.Salt!, user?.HashedPassword!);
         var step3 = step2.Override<LoginResult>();
         var loginResult = step3.Resolve(_ => {
-            var accessToken = _jwtTokenGenerator.GenerateToken(user!.Id, user.Username, user.Role);
+            var accessToken = _jwtTokenGenerator.GenerateToken(user!);
             return new LoginResult(user!.Id, user.Username, accessToken);
         });
 

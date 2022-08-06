@@ -28,7 +28,7 @@ public class RegisterCommandHandler
         var step4 = step3.Override<RegisterResult>();
         var registerResult = step4.Resolve(_ => {
             var user = CreateUser(request);
-            var accessToken = _jwtTokenGenerator.GenerateToken(user.Id, user.Username, user.Role);
+            var accessToken = _jwtTokenGenerator.GenerateToken(user);
 
             _dbContext.Users.Add(user);
             _dbContext.Commit();

@@ -4,6 +4,7 @@ using System.Security.Claims;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Onion.Application.Common.Interfaces;
+using Onion.Domain.Entities.Identity;
 
 namespace Onion.Infrastructure.Authentication;
 
@@ -18,16 +19,16 @@ internal sealed class JwtTokenGenerator : IJwtTokenGenerator
         _jwtSettings = jwtSettings.Value;
     }
 
-    public string GenerateToken(Guid id, string username, string role)
+    public string GenerateToken(User user)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret));
         var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha384);
         var claims = new[]
         {
-            new Claim(JwtRegisteredClaimNames.Sub, id.ToString()),
-            new Claim(JwtRegisteredClaimNames.UniqueName, username),
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.UniqueName, user.Username),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.Role, role),
+            new Claim(ClaimTypes.Role, user.Role),
         };
 
         var jwtToken = new JwtSecurityToken(

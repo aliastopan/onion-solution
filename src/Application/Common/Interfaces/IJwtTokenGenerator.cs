@@ -1,6 +1,8 @@
+using Onion.Domain.Entities.Identity;
+
 namespace Onion.Application.Common.Interfaces;
 
 public interface IJwtTokenGenerator
 {
-    string GenerateToken(Guid id, string username, string role);
+    string GenerateToken(User user);
 }

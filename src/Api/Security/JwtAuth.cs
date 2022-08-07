@@ -13,6 +13,15 @@ public static class JwtAuth
             options.TokenValidationParameters = services
                 .BuildServiceProvider()
                 .GetRequiredService<TokenValidationParameters>();
+
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    context.Token = context.Request.Cookies["jwt"];
+                    return Task.CompletedTask;
+                }
+            };
         });
 
         return services;

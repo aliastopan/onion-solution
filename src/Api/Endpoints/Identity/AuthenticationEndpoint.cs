@@ -22,6 +22,12 @@ public class AuthenticationEndpoint : IEndpoint
         {
             var loginResult = authentication.Value;
             var response = loginResult.Adapt<LoginResult>();
+            var cookieOption = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.Now.AddMinutes(5)
+            };
+            httpContext.Response.Cookies.Append("jwt", response.AccessToken, cookieOption);
             return Results.Ok(response);
         }
         else

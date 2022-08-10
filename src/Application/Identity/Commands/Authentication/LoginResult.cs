@@ -1,4 +1,4 @@
-namespace Onion.Application.Identity.Queries.Authentication;
+namespace Onion.Application.Identity.Commands.Authentication;
 
 public record LoginResult(
     Guid Id,

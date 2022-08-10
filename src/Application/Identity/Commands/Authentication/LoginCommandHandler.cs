@@ -1,16 +1,16 @@
 using Onion.Application.Common.Errors.Identity;
 using Onion.Domain.Entities.Identity;
 
-namespace Onion.Application.Identity.Queries.Authentication;
+namespace Onion.Application.Identity.Commands.Authentication;
 
-public class LoginQueryHandler
-    : IRequestHandler<LoginQuery, IAssertiveResult<LoginResult>>
+public class LoginCommandHandler
+    : IRequestHandler<LoginCommand, IAssertiveResult<LoginResult>>
 {
     private readonly IDbContext _dbContext;
     private readonly ISecureHash _secureHash;
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
 
-    public LoginQueryHandler(
+    public LoginCommandHandler(
         IDbContext dbContext,
         ISecureHash secureHash,
         IJwtTokenGenerator jwtTokenGenerator)
@@ -20,15 +20,15 @@ public class LoginQueryHandler
         _jwtTokenGenerator = jwtTokenGenerator;
     }
 
-    public async Task<IAssertiveResult<LoginResult>> Handle(LoginQuery request, CancellationToken cancellationToken)
+    public async Task<IAssertiveResult<LoginResult>> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
         var user = _dbContext.Users.Search(request.Username);
         var step1 = VerifyUser(user);
         var step2 = VerifyPassword(step1, request.Password, user?.Salt!, user?.HashedPassword!);
         var step3 = step2.Override<LoginResult>();
         var loginResult = step3.Resolve(_ => {
-            var accessToken = _jwtTokenGenerator.GenerateToken(user!);
-            return new LoginResult(user!.Id, user.Username, accessToken);
+            var jwtToken = _jwtTokenGenerator.GenerateToken(user!);
+            return new LoginResult(user!.Id, user.Username, jwtToken);
         });
 
         await Task.CompletedTask;

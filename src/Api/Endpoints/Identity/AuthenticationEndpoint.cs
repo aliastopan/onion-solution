@@ -1,4 +1,4 @@
-using Onion.Application.Identity.Queries.Authentication;
+using Onion.Application.Identity.Commands.Authentication;
 using Onion.Contracts.Identity.Authentication;
 
 namespace Onion.Api.Endpoints.Identity;
@@ -15,8 +15,8 @@ public class AuthenticationEndpoint : IEndpoint
     internal async Task<IResult> Login([FromServices] ISender sender,
         LoginRequest loginRequest, HttpContext httpContext)
     {
-        var query = loginRequest.Adapt<LoginQuery>();
-        var authentication = await sender.Send(query);
+        var command = loginRequest.Adapt<LoginCommand>();
+        var authentication = await sender.Send(command);
 
         if(authentication.Success)
         {

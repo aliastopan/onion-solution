@@ -7,4 +7,4 @@ public record RegisterResponse(
     string Role,
     string Password,
     string Salt,
-    string AccessToken);
+    string Jwt);

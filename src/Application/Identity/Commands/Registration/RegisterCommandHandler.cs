@@ -28,7 +28,7 @@ public class RegisterCommandHandler
         var step4 = step3.Override<RegisterResult>();
         var registerResult = step4.Resolve(_ => {
             var user = CreateUser(request);
-            var accessToken = _jwtService.GenerateJwt(user);
+            var jwt = _jwtService.GenerateJwt(user);
 
             _dbContext.Users.Add(user);
             _dbContext.Commit();
@@ -40,7 +40,7 @@ public class RegisterCommandHandler
                 user.Role.Name,
                 user.HashedPassword,
                 user.Salt,
-                accessToken);
+                jwt);
         });
 
         await Task.CompletedTask;

@@ -27,7 +27,7 @@ public class AuthenticationEndpoint : IEndpoint
                 HttpOnly = true,
                 Expires = DateTime.Now.AddMinutes(5)
             };
-            httpContext.Response.Cookies.Append("jwt", response.AccessToken, cookieOption);
+            httpContext.Response.Cookies.Append("jwt", response.Jwt, cookieOption);
             return Results.Ok(response);
         }
         else

@@ -5,4 +5,5 @@ namespace Onion.Application.Common.Interfaces;
 public interface IJwtService
 {
     string GenerateJwt(User user);
+    string RefreshJwt(string jwt);
 }

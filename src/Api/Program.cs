@@ -30,6 +30,11 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 app.UseEndpoints();
+app.Use(async (context, next) => {
+    await next();
+    if (context.Response.StatusCode == (int)HttpStatusCode.Unauthorized)
+        await context.Response.WriteAsync("Request denied.");
+});
 
 app.UseAuthentication();
 app.UseAuthorization();

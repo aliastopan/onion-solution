@@ -8,16 +8,16 @@ public class RegisterCommandHandler
 {
     private readonly IDbContext _dbContext;
     private readonly ISecureHash _secureHash;
-    private readonly IJwtTokenGenerator _jwtTokenGenerator;
+    private readonly IJwtService _jwtService;
 
     public RegisterCommandHandler(
         IDbContext dbContext,
         ISecureHash secureHash,
-        IJwtTokenGenerator jwtTokenGenerator)
+        IJwtService jwtService)
     {
         _dbContext = dbContext;
         _secureHash = secureHash;
-        _jwtTokenGenerator = jwtTokenGenerator;
+        _jwtService = jwtService;
     }
 
     public async Task<IAssertiveResult<RegisterResult>> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -28,7 +28,7 @@ public class RegisterCommandHandler
         var step4 = step3.Override<RegisterResult>();
         var registerResult = step4.Resolve(_ => {
             var user = CreateUser(request);
-            var accessToken = _jwtTokenGenerator.GenerateToken(user);
+            var accessToken = _jwtService.GenerateJwt(user);
 
             _dbContext.Users.Add(user);
             _dbContext.Commit();

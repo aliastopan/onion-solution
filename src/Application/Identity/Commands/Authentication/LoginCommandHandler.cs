@@ -8,16 +8,16 @@ public class LoginCommandHandler
 {
     private readonly IDbContext _dbContext;
     private readonly ISecureHash _secureHash;
-    private readonly IJwtTokenGenerator _jwtTokenGenerator;
+    private readonly IJwtService _jwtService;
 
     public LoginCommandHandler(
         IDbContext dbContext,
         ISecureHash secureHash,
-        IJwtTokenGenerator jwtTokenGenerator)
+        IJwtService jwtService)
     {
         _dbContext = dbContext;
         _secureHash = secureHash;
-        _jwtTokenGenerator = jwtTokenGenerator;
+        _jwtService = jwtService;
     }
 
     public async Task<IAssertiveResult<LoginResult>> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -27,7 +27,7 @@ public class LoginCommandHandler
         var step2 = VerifyPassword(step1, request.Password, user?.Salt!, user?.HashedPassword!);
         var step3 = step2.Override<LoginResult>();
         var loginResult = step3.Resolve(_ => {
-            var jwtToken = _jwtTokenGenerator.GenerateToken(user!);
+            var jwtToken = _jwtService.GenerateJwt(user!);
             return new LoginResult(user!.Id, user.Username, jwtToken);
         });
 

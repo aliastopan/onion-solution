@@ -8,18 +8,18 @@ using Onion.Domain.Entities.Identity;
 
 namespace Onion.Infrastructure.Authentication;
 
-internal sealed class JwtTokenGenerator : IJwtTokenGenerator
+internal sealed class JwtProvider : IJwtService
 {
     private readonly JwtSettings _jwtSettings;
     private readonly IDateTime _dateTime;
 
-    public JwtTokenGenerator(IDateTime dateTime, IOptions<JwtSettings> jwtSettings)
+    public JwtProvider(IDateTime dateTime, IOptions<JwtSettings> jwtSettings)
     {
         _dateTime = dateTime;
         _jwtSettings = jwtSettings.Value;
     }
 
-    public string GenerateToken(User user)
+    public string GenerateJwt(User user)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret));
         var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha384);

@@ -2,7 +2,7 @@ using Onion.Domain.Entities.Identity;
 
 namespace Onion.Application.Common.Interfaces;
 
-public interface IJwtTokenGenerator
+public interface IJwtService
 {
-    string GenerateToken(User user);
+    string GenerateJwt(User user);
 }

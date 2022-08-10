@@ -16,7 +16,8 @@ public static class ConfigureServices
     {
         services.AddSingleton<ISecureHash, SecureHashProvider>();
         services.AddSingleton<IDateTime, DateTimeProvider>();
-        services.AddSingleton(JwtValidator.GetValidationParameters(configuration));
+        services.AddSingleton<JwtValidator>();
+        services.AddSingleton(JwtValidator.ProperValidationParameters(configuration));
         services.AddScoped<IJwtService, JwtProvider>();
         services.AddInfrastructureDbContext(configuration);
 

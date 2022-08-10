@@ -11,19 +11,19 @@ namespace Onion.Infrastructure.Authentication;
 internal sealed class JwtProvider : IJwtService
 {
     private readonly JwtSettings _jwtSettings;
+    private readonly JwtValidator _jwtValidator;
     private readonly IDateTime _dateTime;
     private readonly IDbContext _dbContext;
-    private readonly TokenValidationParameters _tokenValidationParameters;
 
     public JwtProvider(
         IOptions<JwtSettings> jwtSettings,
+        JwtValidator jwtValidator,
         IDateTime dateTime,
-        IDbContext dbContext,
-        TokenValidationParameters tokenValidationParameters)
+        IDbContext dbContext)
     {
         _jwtSettings = jwtSettings.Value;
+        _jwtValidator = jwtValidator;
         _dateTime = dateTime;
-        _tokenValidationParameters = tokenValidationParameters;
         _dbContext = dbContext;
     }
 
@@ -53,7 +53,7 @@ internal sealed class JwtProvider : IJwtService
 
     public string RefreshJwt(string jwt)
     {
-        var principal = GetPrincipalFromToken(jwt);
+        var principal = GetPrincipalFromExpiredToken(jwt);
         if(principal is null)
             return "Invalid null principal.";
 
@@ -71,12 +71,13 @@ internal sealed class JwtProvider : IJwtService
         return GenerateJwt(user);
     }
 
-    private ClaimsPrincipal GetPrincipalFromToken(string jwtToken)
+    private ClaimsPrincipal GetPrincipalFromExpiredToken(string jwtToken)
     {
         try
         {
+            var validationParameters = _jwtValidator.RefreshValidationParameters();
             var tokenHandler = new JwtSecurityTokenHandler();
-            var principal = tokenHandler.ValidateToken(jwtToken, _tokenValidationParameters, out var securityToken);
+            var principal = tokenHandler.ValidateToken(jwtToken, validationParameters, out var securityToken);
             if(!HasValidSecurityAlgorithm(securityToken))
                 return null!;
 

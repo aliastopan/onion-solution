@@ -10,10 +10,9 @@ public static class JwtAuth
     {
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
         {
-            options.TokenValidationParameters = services
-                .BuildServiceProvider()
-                .GetRequiredService<TokenValidationParameters>();
+            var provider = services.BuildServiceProvider();
 
+            options.TokenValidationParameters = provider.GetRequiredService<TokenValidationParameters>();
             options.Events = new JwtBearerEvents
             {
                 OnMessageReceived = context =>

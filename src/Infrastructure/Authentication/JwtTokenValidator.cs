@@ -23,7 +23,8 @@ public static class JwtTokenValidator
             ValidateIssuerSigningKey = true,
             ValidIssuer = iss,
             ValidAudience = aud,
-            IssuerSigningKey = key
+            IssuerSigningKey = key,
+            ClockSkew = TimeSpan.Zero
         });
 
         return services;

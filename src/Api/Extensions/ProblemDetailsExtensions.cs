@@ -1,13 +1,11 @@
 using System.Diagnostics;
-using AssertiveResults;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Onion.Api.Extensions;
 
 public static class ProblemDetailsExtensions
 {
     public static ProblemDetails ToProblemDetails(
-        this IAssertiveResult result,
+        this AssertiveResults.IResult result,
         string instance,
         int statusCode,
         HttpContext httpContext)

@@ -4,7 +4,7 @@ using Onion.Domain.Entities.Identity;
 namespace Onion.Application.Identity.Commands.Registration;
 
 public class RegisterCommandHandler
-    : IRequestHandler<RegisterCommand, IAssertiveResult<RegisterResult>>
+    : IRequestHandler<RegisterCommand, IResult<RegisterResult>>
 {
     private readonly IDbContext _dbContext;
     private readonly ISecureHash _secureHash;
@@ -20,7 +20,7 @@ public class RegisterCommandHandler
         _jwtService = jwtService;
     }
 
-    public async Task<IAssertiveResult<RegisterResult>> Handle(RegisterCommand request, CancellationToken cancellationToken)
+    public async Task<IResult<RegisterResult>> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         var step1 = ValidateRequest(request);
         var step2 = ValidateUsername(step1, request.Username);
@@ -48,7 +48,7 @@ public class RegisterCommandHandler
     }
 
     // STEP 1
-    private static IResult ValidateRequest(RegisterCommand request)
+    private static ISubject ValidateRequest(RegisterCommand request)
     {
         return Assertive.Result()
             .Assert(dto => dto.RegularExpression.Validate(request.Username).Format.Username())
@@ -57,9 +57,9 @@ public class RegisterCommandHandler
     }
 
     // STEP 2
-    private IResult ValidateUsername(IResult result, string username)
+    private ISubject ValidateUsername(ISubject subject, string username)
     {
-        return result.Assert(ctx => {
+        return subject.Assert(ctx => {
             var searchResult = _dbContext.Users.Search(username);
             var available = searchResult is null;
             ctx.Should.Satisfy(available).WithError(Error.Registration.UsernameTaken);
@@ -67,9 +67,9 @@ public class RegisterCommandHandler
     }
 
     // STEP 3
-    private IResult ValidateEmail(IResult result, string email)
+    private ISubject ValidateEmail(ISubject subject, string email)
     {
-        return result.Assert(ctx => {
+        return subject.Assert(ctx => {
             var searchResult = _dbContext.Users.SearchByEmail(email);
             var available = searchResult is null;
             ctx.Should.Satisfy(available).WithError(Error.Registration.EmailInUse);

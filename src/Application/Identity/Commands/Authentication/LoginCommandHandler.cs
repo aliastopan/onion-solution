@@ -4,7 +4,7 @@ using Onion.Domain.Entities.Identity;
 namespace Onion.Application.Identity.Commands.Authentication;
 
 public class LoginCommandHandler
-    : IRequestHandler<LoginCommand, IAssertiveResult<LoginResult>>
+    : IRequestHandler<LoginCommand, IResult<LoginResult>>
 {
     private readonly IDbContext _dbContext;
     private readonly ISecureHash _secureHash;
@@ -20,7 +20,7 @@ public class LoginCommandHandler
         _jwtService = jwtService;
     }
 
-    public async Task<IAssertiveResult<LoginResult>> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public async Task<IResult<LoginResult>> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
         var user = _dbContext.Users.Search(request.Username);
         var step1 = VerifyUser(user);
@@ -36,7 +36,7 @@ public class LoginCommandHandler
     }
 
     // STEP 1
-    private static IResult VerifyUser(User? user)
+    private static ISubject VerifyUser(User? user)
     {
         return Assertive.Result()
             .Assert(ctx => {
@@ -46,9 +46,9 @@ public class LoginCommandHandler
     }
 
     // STEP 2
-    private IResult VerifyPassword(IResult result, string password, string salt, string hashedPassword)
+    private ISubject VerifyPassword(ISubject subject, string password, string salt, string hashedPassword)
     {
-        return result.Assert(ctx => {
+        return subject.Assert(ctx => {
             bool verify = _secureHash.VerifyPassword(password, salt, hashedPassword);
             ctx.Should.Satisfy(verify).WithError(Error.Authentication.IncorrectPassword);
         });

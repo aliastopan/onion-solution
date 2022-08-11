@@ -3,7 +3,7 @@ using Onion.Application.Common.Errors.Identity;
 namespace Onion.Application.Identity.Management.Queries.GetAllUsers;
 
 public class GetAllUsersQueryHandler
-    : IRequestHandler<GetAllUsersQuery, IAssertiveResult<GetAllUsersResult>>
+    : IRequestHandler<GetAllUsersQuery, IResult<GetAllUsersResult>>
 {
     private readonly IDbContext _dbContext;
 
@@ -12,7 +12,7 @@ public class GetAllUsersQueryHandler
         _dbContext = dbContext;
     }
 
-    public async Task<IAssertiveResult<GetAllUsersResult>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
+    public async Task<IResult<GetAllUsersResult>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
     {
         var users = _dbContext.Users.GetAll();
         var getAllUsersResult = Assertive.Result<GetAllUsersResult>()

@@ -1,3 +1,3 @@
 namespace Onion.Application.Identity.Management.Queries.GetAllUsers;
 
-public record GetAllUsersQuery : IRequest<IAssertiveResult<GetAllUsersResult>>;
+public record GetAllUsersQuery : IRequest<IResult<GetAllUsersResult>>;

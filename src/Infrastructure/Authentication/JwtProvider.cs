@@ -53,11 +53,28 @@ internal sealed class JwtProvider : IJwtService
 
     public string RefreshJwt(string jwt)
     {
-        var principal = GetPrincipalFromExpiredToken(jwt);
+        var principal = GetPrincipalFromToken(jwt);
         if(principal is null)
             return "Invalid null principal.";
 
         return GenerateJwt(principal);
+    }
+
+    public RefreshToken GenerateRefreshToken(string jwt, User user)
+    {
+        var principal = GetPrincipalFromToken(jwt);
+        var jti = principal.Claims.Single(x => x.Type == JwtClaimTypes.Jti).Value;
+        var refreshToken = new RefreshToken
+        {
+            Token = CCred.Sauce.GenerateGibberish(32, "!.-_"),
+            JwtId = jti,
+            CreationDate = _dateTime.UtcNow,
+            ExpiryDate = _dateTime.UtcNow.Add(_jwtSettings.RefreshLifeTime),
+            User = user
+        };
+        _dbContext.RefreshTokens.Add(refreshToken);
+        _dbContext.Commit();
+        return refreshToken;
     }
 
     private string GenerateJwt(ClaimsPrincipal principal)
@@ -71,13 +88,13 @@ internal sealed class JwtProvider : IJwtService
         return GenerateJwt(user);
     }
 
-    private ClaimsPrincipal GetPrincipalFromExpiredToken(string jwtToken)
+    private ClaimsPrincipal GetPrincipalFromToken(string jwt)
     {
         try
         {
             var validationParameters = _jwtValidator.RefreshValidationParameters();
             var tokenHandler = new JwtSecurityTokenHandler();
-            var principal = tokenHandler.ValidateToken(jwtToken, validationParameters, out var securityToken);
+            var principal = tokenHandler.ValidateToken(jwt, validationParameters, out var securityToken);
             if(!HasValidSecurityAlgorithm(securityToken))
                 return null!;
 

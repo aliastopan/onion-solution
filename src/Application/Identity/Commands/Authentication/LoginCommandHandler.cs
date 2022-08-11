@@ -27,8 +27,9 @@ public class LoginCommandHandler
         var step2 = VerifyPassword(step1, request.Password, user?.Salt!, user?.HashedPassword!);
         var step3 = step2.Override<LoginResult>();
         var loginResult = step3.Resolve(_ => {
-            var jwtToken = _jwtService.GenerateJwt(user!);
-            return new LoginResult(user!.Id, user.Username, jwtToken);
+            var jwt = _jwtService.GenerateJwt(user!);
+            var refreshToken = _jwtService.GenerateRefreshToken(jwt, user!).Token;
+            return new LoginResult(user!.Id, user.Username, jwt, refreshToken);
         });
 
         await Task.CompletedTask;

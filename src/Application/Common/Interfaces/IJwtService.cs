@@ -6,4 +6,5 @@ public interface IJwtService
 {
     string GenerateJwt(User user);
     string RefreshJwt(string jwt);
+    RefreshToken GenerateRefreshToken(string jwt, User user);
 }

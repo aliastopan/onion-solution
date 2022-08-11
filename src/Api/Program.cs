@@ -11,6 +11,7 @@ builder.Host.ConfigureLogging((context, logging) =>
         .ReadFrom.Configuration(context.Configuration)
         .Enrich.FromLogContext()
         .WriteTo.Console()
+        .Filter.ByExcluding(x => x.MessageTemplate.Text.Contains(LogMessage.TokenValidationFailed))
         .CreateLogger();
 
     logging.ClearProviders();

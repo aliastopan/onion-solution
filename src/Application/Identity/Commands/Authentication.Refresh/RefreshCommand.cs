@@ -1,4 +1,5 @@
 namespace Onion.Application.Identity.Commands.Authentication.Refresh;
 
 public record RefreshCommand(
-    string Jwt) : IRequest<RefreshResult>;
+    string Jwt,
+    string RefreshToken) : IRequest<RefreshResult>;

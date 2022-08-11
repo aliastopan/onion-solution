@@ -28,6 +28,7 @@ public class AuthenticationEndpoint : IEndpoint
                 Expires = DateTime.Now.AddMinutes(5)
             };
             httpContext.Response.Cookies.Append("jwt", response.Jwt, cookieOption);
+            httpContext.Response.Cookies.Append("rwt", response.RefreshToken, cookieOption);
             return Results.Ok(response);
         }
         else

@@ -1,7 +1,6 @@
 using Onion.Api.Security;
 using Onion.Application;
 using Onion.Infrastructure;
-using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 

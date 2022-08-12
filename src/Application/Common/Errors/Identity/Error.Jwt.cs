@@ -7,16 +7,16 @@ public static partial class Error
     public static class Jwt
     {
         public static ErrorResult InvalidPrincipal => ErrorResult.Validation("Token.Invalid", "Invalid JWT.");
-        public static ErrorResult HasNotExpiredYet => ErrorResult.Failure("Token.Invalid", "JWT has not expired yet.");
-        public static ErrorResult HasExpired => ErrorResult.Failure("Token.Invalid", "JWT has expired.");
+        public static ErrorResult HasNotYetExpired => ErrorResult.Failure("Jwt.HasNotYetExpired", "JWT has not yet expired.");
+        public static ErrorResult HasExpired => ErrorResult.Failure("Jwt.HasExpired", "JWT has expired.");
     }
 
     public static class RefreshToken
     {
-        public static ErrorResult Invalid => ErrorResult.Validation("Token.Invalid", "Refresh token is invalid.");
-        public static ErrorResult HasExpired => ErrorResult.Failure("Token.Invalid", "Refresh token has expired.");
-        public static ErrorResult NotFound => ErrorResult.NotFound("Token.Invalid", "Refresh token not found.");
-        public static ErrorResult IsUsed => ErrorResult.Failure("Token.Invalid", "Refresh token has been used.");
-        public static ErrorResult IsInvalidated => ErrorResult.Validation("Token.Invalid", "Refresh token has been invalidated.");
+        public static ErrorResult InvalidJwt => ErrorResult.Validation("RefreshToken.InvalidJwt", "Refresh token has invalid Jwt.");
+        public static ErrorResult HasExpired => ErrorResult.Failure("RefreshToken.HasExpired", "Refresh token has expired.");
+        public static ErrorResult NotFound => ErrorResult.NotFound("RefreshToken.NotFound", "Refresh token not found.");
+        public static ErrorResult HasBeenUsed => ErrorResult.Failure("RefreshToken.HasBeenUsed", "Refresh token has been used.");
+        public static ErrorResult HasBeenInvalidated => ErrorResult.Validation("RefreshToken.HasBeenInvalidated", "Refresh token has been invalidated.");
     }
 }

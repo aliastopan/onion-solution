@@ -19,15 +19,23 @@ public class RefreshEndpoint : IEndpoint
             return Results.NoContent();
 
         var command = new RefreshCommand(jwt, rwt);
-        var refreshResult = await sender.Send(command);
-        var refreshResponse = refreshResult.Adapt<RefreshResponse>();
+        var refresh = await sender.Send(command);
+
+        if(refresh.Failed)
+        {
+            int code = (int)HttpStatusCode.UnprocessableEntity;
+            var problemDetails = refresh.ToProblemDetails("api/refresh", code, httpContext);
+            return Results.Problem(problemDetails);
+        }
+
+        var refreshResponse = refresh.Value.Adapt<RefreshResponse>();
         var cookieOption = new CookieOptions
         {
             HttpOnly = true,
             Expires = DateTime.Now.AddMinutes(5)
         };
         httpContext.Response.Cookies.Append("jwt", refreshResponse.Jwt, cookieOption);
-        httpContext.Response.Cookies.Append("rwt", refreshResponse.Jwt, cookieOption);
+        httpContext.Response.Cookies.Append("rwt", refreshResponse.RefreshToken, cookieOption);
         return Results.Ok(refreshResponse);
     }
 }

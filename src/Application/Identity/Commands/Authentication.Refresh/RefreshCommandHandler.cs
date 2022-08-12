@@ -2,7 +2,7 @@
 namespace Onion.Application.Identity.Commands.Authentication.Refresh;
 
 public class RefreshCommandHandler
-    : IRequestHandler<RefreshCommand, RefreshResult>
+    : IRequestHandler<RefreshCommand, IResult<RefreshResult>>
 {
     private readonly IJwtService _jwtService;
 
@@ -11,10 +11,15 @@ public class RefreshCommandHandler
         _jwtService = jwtService;
     }
 
-    public async Task<RefreshResult> Handle(RefreshCommand request, CancellationToken cancellationToken)
+    public async Task<IResult<RefreshResult>> Handle(RefreshCommand request, CancellationToken cancellationToken)
     {
-        var jwt = _jwtService.RefreshJwt(request.Jwt);
-        var refreshResult = new RefreshResult(jwt, Guid.NewGuid().ToString());
+        var step1 = _jwtService.Refresh(request.Jwt, request.RefreshToken);
+        var step2 = step1.Override<RefreshResult>(out var token);
+        var refreshResult = step2.Resolve(_ =>
+        {
+            return new RefreshResult(token.jwt, token.refreshToken);
+        });
+
         await Task.CompletedTask;
         return refreshResult;
     }

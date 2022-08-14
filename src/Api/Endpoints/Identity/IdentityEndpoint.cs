@@ -22,6 +22,7 @@ public class IdentityEndpoint : IEndpoint
             .WithTags(Uri.Identity.Tag);
 
         app.MapPost(Uri.Identity.Refresh, Refresh)
+            .AllowAnonymous()
             .Produces<RefreshResponse>()
             .WithTags(Uri.Identity.Tag);
     }

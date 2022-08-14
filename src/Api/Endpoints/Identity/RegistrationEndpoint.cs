@@ -18,7 +18,7 @@ public class RegistrationEndpoint : IEndpoint
         var command = request.Adapt<RegisterCommand>();
         var registration = await sender.Send(command);
 
-        if(registration.Success)
+        if(registration.IsSuccess)
         {
             var registerResult = registration.Value;
             var response = registerResult.Adapt<RegisterResponse>();

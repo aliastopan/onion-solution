@@ -18,7 +18,7 @@ public class AuthenticationEndpoint : IEndpoint
         var command = loginRequest.Adapt<LoginCommand>();
         var authentication = await sender.Send(command);
 
-        if(authentication.Success)
+        if(authentication.IsSuccess)
         {
             var loginResult = authentication.Value;
             var response = loginResult.Adapt<LoginResult>();

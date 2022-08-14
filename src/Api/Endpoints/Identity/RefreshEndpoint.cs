@@ -21,7 +21,7 @@ public class RefreshEndpoint : IEndpoint
         var command = new RefreshCommand(jwt, rwt);
         var refresh = await sender.Send(command);
 
-        if(refresh.Failed)
+        if(refresh.HasFailed)
         {
             int code = (int)HttpStatusCode.UnprocessableEntity;
             var problemDetails = refresh.ToProblemDetails("api/refresh", code, httpContext);

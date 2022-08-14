@@ -17,7 +17,7 @@ public class UserManagementEndpoint : IEndpoint
         var query = new GetAllUsersQuery();
         var getAllUser = await sender.Send(query);
 
-        if(getAllUser.Success)
+        if(getAllUser.IsSuccess)
         {
             var value = getAllUser.Value;
             return Results.Ok(value);

@@ -135,7 +135,7 @@ internal sealed class JwtProvider : IJwtService
             ctx.Should.NotSatisfy(refreshToken.JwtId != jti).WithError(Error.RefreshToken.InvalidJwt);
         });
 
-        return subject.Resolve(() =>
+        return subject.Resolve(_ =>
         {
             MarkRefreshTokenAsUsed(refreshToken);
         })

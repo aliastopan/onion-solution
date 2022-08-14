@@ -24,7 +24,7 @@ public class RefreshEndpoint : IEndpoint
         if(refresh.HasFailed)
         {
             int code = (int)HttpStatusCode.UnprocessableEntity;
-            var problemDetails = refresh.ToProblemDetails("api/refresh", code, httpContext);
+            var problemDetails = refresh.ToProblemDetails(httpContext, code);
             return Results.Problem(problemDetails);
         }
 

@@ -34,7 +34,7 @@ public class AuthenticationEndpoint : IEndpoint
         else
         {
             int code = (int)HttpStatusCode.UnprocessableEntity;
-            var problemDetails = authentication.ToProblemDetails(LoginUri, code, httpContext);
+            var problemDetails = authentication.ToProblemDetails(httpContext, code);
             return Results.Problem(problemDetails);
         }
     }

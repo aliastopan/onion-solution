@@ -27,7 +27,7 @@ public class RegistrationEndpoint : IEndpoint
         else
         {
             int code = (int)HttpStatusCode.UnprocessableEntity;
-            var problemDetails = registration.ToProblemDetails(RegisterUri, code, httpContext);
+            var problemDetails = registration.ToProblemDetails(httpContext, code);
             return Results.Problem(problemDetails);
         }
     }

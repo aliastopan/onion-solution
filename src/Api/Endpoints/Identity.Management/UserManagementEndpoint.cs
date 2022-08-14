@@ -25,7 +25,7 @@ public class UserManagementEndpoint : IEndpoint
         else
         {
             int code = (int)HttpStatusCode.NotFound;
-            var problemDetails = getAllUser.ToProblemDetails(GetAllUserUri, code, httpContext);
+            var problemDetails = getAllUser.ToProblemDetails(httpContext, code);
             return Results.Problem(problemDetails);
         }
     }

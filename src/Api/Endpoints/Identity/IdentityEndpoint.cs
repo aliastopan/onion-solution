@@ -59,7 +59,7 @@ public class IdentityEndpoint : IEndpoint
         }
 
         var loginResult = authentication.Value;
-        var loginResponse = loginResult.Adapt<LoginResult>();
+        var loginResponse = loginResult.Adapt<LoginResponse>();
         var cookieOption = new CookieOptions
         {
             HttpOnly = true,

@@ -1,6 +1,6 @@
 using Microsoft.OpenApi.Models;
 
-namespace Onion.Api.Endpoints;
+namespace Onion.Api.Endpoints.Common;
 
 public class SwaggerEndpoint : IEndpoint, IService
 {
@@ -24,7 +24,7 @@ public class SwaggerEndpoint : IEndpoint, IService
                 BearerFormat = "JWT",
                 In = ParameterLocation.Header,
                 Name = "Authorization",
-                Description = "Bearer Authentication with JWT Token",
+                Description = "Bearer Authentication with JSON Web Token",
                 Type = SecuritySchemeType.Http
             });
             options.AddSecurityRequirement(new OpenApiSecurityRequirement

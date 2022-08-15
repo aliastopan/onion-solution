@@ -1,6 +1,7 @@
 using Onion.Application.Identity.Commands.Authentication;
 using Onion.Application.Identity.Commands.Authentication.Refresh;
 using Onion.Application.Identity.Commands.Registration;
+using Onion.Application.Identity.Queries.GetUsers;
 using Onion.Contracts.Identity.Authentication;
 using Onion.Contracts.Identity.Authentication.Refresh;
 using Onion.Contracts.Identity.Registration;
@@ -24,6 +25,10 @@ public class IdentityEndpoint : IEndpoint
         app.MapPost(Uri.Identity.Refresh, Refresh)
             .AllowAnonymous()
             .Produces<RefreshResponse>()
+            .WithTags(Uri.Identity.Tag);
+
+        app.MapGet(Uri.Identity.GetUsers, GetUsers)
+            .Produces<GetUsersQueryResult>()
             .WithTags(Uri.Identity.Tag);
     }
 
@@ -95,5 +100,20 @@ public class IdentityEndpoint : IEndpoint
         httpContext.Response.Cookies.Append("jwt", refreshResponse.Jwt, cookieOption);
         httpContext.Response.Cookies.Append("rwt", refreshResponse.RefreshToken, cookieOption);
         return Results.Ok(refreshResponse);
+    }
+
+    internal async Task<IResult> GetUsers([FromServices] ISender sender,
+        HttpContext httpContext)
+    {
+        var query = new GetUsersQuery();
+        var getUsers = await sender.Send(query);
+
+        if(getUsers.HasFailed)
+        {
+            return Results.Problem(getUsers.ToProblemDetails(httpContext));
+        }
+
+        var getUsersResult = getUsers.Value;
+        return Results.Ok(getUsersResult);
     }
 }

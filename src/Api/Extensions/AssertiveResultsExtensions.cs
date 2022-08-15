@@ -2,7 +2,7 @@ using System.Diagnostics;
 
 namespace Onion.Api.Extensions;
 
-public static class ProblemDetailsExtensions
+public static class AssertiveResultsExtensions
 {
     public static ProblemDetails ToProblemDetails(this AssertiveResults.IResult result,
         HttpContext httpContext)

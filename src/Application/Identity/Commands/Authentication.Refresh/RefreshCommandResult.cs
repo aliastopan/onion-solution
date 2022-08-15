@@ -1,5 +1,5 @@
 namespace Onion.Application.Identity.Commands.Authentication.Refresh;
 
-public record RefreshResult(
+public record RefreshCommandResult(
     string Jwt,
     string RefreshToken);

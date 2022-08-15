@@ -3,8 +3,7 @@ using Onion.Domain.Entities.Identity;
 
 namespace Onion.Application.Identity.Commands.Registration;
 
-public class RegisterCommandHandler
-    : IRequestHandler<RegisterCommand, IResult<RegisterResult>>
+public class RegisterCommandHandler : IRequestHandler<RegisterCommand, IResult<RegisterCommandResult>>
 {
     private readonly IDbContext _dbContext;
     private readonly ISecureHash _secureHash;
@@ -20,20 +19,20 @@ public class RegisterCommandHandler
         _jwtService = jwtService;
     }
 
-    public async Task<IResult<RegisterResult>> Handle(RegisterCommand request, CancellationToken cancellationToken)
+    public async Task<IResult<RegisterCommandResult>> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         var step1 = ValidateRequest(request);
         var step2 = ValidateUsername(step1, request.Username);
         var step3 = ValidateEmail(step2, request.Email);
-        var step4 = step3.Override<RegisterResult>();
-        var registerResult = step4.Resolve(_ => {
+        var step4 = step3.Override<RegisterCommandResult>();
+        var result = step4.Resolve(_ => {
             var user = CreateUser(request);
             var jwt = _jwtService.GenerateJwt(user);
 
             _dbContext.Users.Add(user);
             _dbContext.Commit();
 
-            return new RegisterResult(
+            return new RegisterCommandResult(
                 user.Id,
                 user.Username,
                 user.Email,
@@ -44,7 +43,7 @@ public class RegisterCommandHandler
         });
 
         await Task.CompletedTask;
-        return registerResult;
+        return result;
     }
 
     // STEP 1

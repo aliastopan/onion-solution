@@ -3,8 +3,7 @@ using Onion.Domain.Entities.Identity;
 
 namespace Onion.Application.Identity.Commands.Authentication;
 
-public class LoginCommandHandler
-    : IRequestHandler<LoginCommand, IResult<LoginResult>>
+public class LoginCommandHandler : IRequestHandler<LoginCommand, IResult<LoginCommandResult>>
 {
     private readonly IDbContext _dbContext;
     private readonly ISecureHash _secureHash;
@@ -20,20 +19,20 @@ public class LoginCommandHandler
         _jwtService = jwtService;
     }
 
-    public async Task<IResult<LoginResult>> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public async Task<IResult<LoginCommandResult>> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
         var user = _dbContext.Users.Search(request.Username);
         var step1 = VerifyUser(user);
         var step2 = VerifyPassword(step1, request.Password, user?.Salt!, user?.HashedPassword!);
-        var step3 = step2.Override<LoginResult>();
-        var loginResult = step3.Resolve(_ => {
+        var step3 = step2.Override<LoginCommandResult>();
+        var result = step3.Resolve(_ => {
             var jwt = _jwtService.GenerateJwt(user!);
             var refreshToken = _jwtService.GenerateRefreshToken(jwt, user!).Token;
-            return new LoginResult(user!.Id, user.Username, jwt, refreshToken);
+            return new LoginCommandResult(user!.Id, user.Username, jwt, refreshToken);
         });
 
         await Task.CompletedTask;
-        return loginResult;
+        return result;
     }
 
     // STEP 1

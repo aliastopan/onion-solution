@@ -1,6 +1,6 @@
 namespace Onion.Application.Identity.Commands.Registration;
 
-public record RegisterResult(
+public record RegisterCommandResult(
     Guid Id,
     string Username,
     string Email,

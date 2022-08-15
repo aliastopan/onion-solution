@@ -71,7 +71,12 @@ public class IdentityEndpoint : IEndpoint
         var jwt = httpContext.Request.Cookies["jwt"];
         var rwt = httpContext.Request.Cookies["rwt"];
         if(jwt is null || rwt is null)
-            return Results.NoContent();
+        {
+            return Results.Problem(new ProblemDetails
+            {
+                Status = (int)HttpStatusCode.NotFound
+            });
+        }
 
         var command = new RefreshCommand(jwt, rwt);
         var refresh = await sender.Send(command);

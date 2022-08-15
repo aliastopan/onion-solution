@@ -35,9 +35,7 @@ public class IdentityEndpoint : IEndpoint
 
         if(registration.HasFailed)
         {
-            var statusCode = (int)HttpStatusCode.UnprocessableEntity;
-            var problemDetails = registration.ToProblemDetails(httpContext, statusCode);
-            return Results.Problem(problemDetails);
+            return Results.Problem(registration.ToProblemDetails(httpContext));
         }
 
         var registerResult = registration.Value;
@@ -52,9 +50,7 @@ public class IdentityEndpoint : IEndpoint
         var authentication = await sender.Send(command);
         if(authentication.HasFailed)
         {
-            var statusCode = (int)HttpStatusCode.Unauthorized;
-            var problemDetails = authentication.ToProblemDetails(httpContext, statusCode);
-            return Results.Problem(problemDetails);
+            return Results.Problem(authentication.ToProblemDetails(httpContext));
         }
 
         var loginResult = authentication.Value;
@@ -81,9 +77,7 @@ public class IdentityEndpoint : IEndpoint
         var refresh = await sender.Send(command);
         if(refresh.HasFailed)
         {
-            return Results.Problem(refresh.ToProblemDetails(
-                httpContext,
-                (int)HttpStatusCode.Unauthorized));
+            return Results.Problem(refresh.ToProblemDetails(httpContext));
         }
 
         var refreshResult = refresh.Value;

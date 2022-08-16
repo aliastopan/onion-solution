@@ -87,13 +87,14 @@ internal sealed class JwtProvider : IJwtService
         var step1 = ValidatePrincipal(principal);
         var step2 = ValidateJwt(step1, principal);
         var step3 = ValidateRefreshToken(step2, principal, refreshToken);
-        var step4 = step3.Override<(string jwt, string refreshToken)>();
-        return step4.Resolve(_ =>
-        {
-            jwt = GenerateJwt(principal, out var user);
-            refreshToken = GenerateRefreshToken(jwt, user).Token;
-            return (jwt, refreshToken);
-        });
+        return step3
+            .Override<(string jwt, string refreshToken)>()
+            .Resolve(_ =>
+            {
+                jwt = GenerateJwt(principal, out var user);
+                refreshToken = GenerateRefreshToken(jwt, user).Token;
+                return (jwt, refreshToken);
+            });
     }
 
     // STEP 1
@@ -126,20 +127,22 @@ internal sealed class JwtProvider : IJwtService
             refreshToken = _dbContext.RefreshTokens.SingleOrDefault(x => x.Token == token)!;
             ctx.Should.NotNull(refreshToken).WithError(Error.RefreshToken.NotFound);
         })
-        .Assert(ctx => ctx.Should.NotSatisfy(refreshToken.ExpiryDate < _dateTime.UtcNow).WithError(Error.RefreshToken.HasExpired))
-        .Assert(ctx => ctx.Should.NotSatisfy(refreshToken.IsInvalidated).WithError(Error.RefreshToken.HasBeenInvalidated))
-        .Assert(ctx => ctx.Should.NotSatisfy(refreshToken.IsUsed).WithError(Error.RefreshToken.HasBeenUsed))
+        .Assert(ctx =>
+        {
+            ctx.Should.NotSatisfy(refreshToken.ExpiryDate < _dateTime.UtcNow).WithError(Error.RefreshToken.HasExpired);
+            ctx.Should.NotSatisfy(refreshToken.IsInvalidated).WithError(Error.RefreshToken.HasBeenInvalidated);
+            ctx.Should.NotSatisfy(refreshToken.IsUsed).WithError(Error.RefreshToken.HasBeenUsed);
+        })
         .Assert(ctx =>
         {
             var jti = principal.Claims.Single(x => x.Type == JwtClaimTypes.Jti).Value;
-            ctx.Should.NotSatisfy(refreshToken.JwtId != jti).WithError(Error.RefreshToken.InvalidJwt);
+            ctx.Should.Equal(refreshToken.JwtId, jti).WithError(Error.RefreshToken.InvalidJwt);
         });
 
         return subject.Resolve(_ =>
         {
             MarkRefreshTokenAsUsed(refreshToken);
-        })
-        .Overload();
+        });
     }
 
     private ClaimsPrincipal GetPrincipalFromToken(string jwt)
@@ -150,7 +153,9 @@ internal sealed class JwtProvider : IJwtService
             var tokenHandler = new JwtSecurityTokenHandler();
             var principal = tokenHandler.ValidateToken(jwt, validationParameters, out var securityToken);
             if(!HasValidSecurityAlgorithm(securityToken))
+            {
                 return null!;
+            }
 
             return principal;
         }

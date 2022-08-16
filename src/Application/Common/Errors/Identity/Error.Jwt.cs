@@ -1,4 +1,5 @@
 using System.Net;
+using AssertiveResults.Errors;
 using ErrorResult = AssertiveResults.Errors.Error;
 
 namespace Onion.Application.Common.Errors.Identity;
@@ -7,19 +8,19 @@ public static partial class Error
 {
     public static class Jwt
     {
-        public static ErrorResult InvalidPrincipal => ErrorResult
+        public static IError InvalidPrincipal => ErrorResult
             .Validation(
                 HttpStatusCode.Unauthorized,
                 "Token.Invalid",
                 "Invalid JWT.");
 
-        public static ErrorResult HasNotYetExpired => ErrorResult
+        public static IError HasNotYetExpired => ErrorResult
             .Failure(
                 HttpStatusCode.NotAcceptable,
                 "Jwt.HasNotYetExpired",
                 "JWT has not yet expired.");
 
-        public static ErrorResult HasExpired => ErrorResult
+        public static IError HasExpired => ErrorResult
             .Failure(
                 HttpStatusCode.Unauthorized,
                 "Jwt.HasExpired",
@@ -28,31 +29,31 @@ public static partial class Error
 
     public static class RefreshToken
     {
-        public static ErrorResult InvalidJwt => ErrorResult
+        public static IError InvalidJwt => ErrorResult
             .Validation(
                 HttpStatusCode.Unauthorized,
                 "RefreshToken.InvalidJwt",
                 "Refresh token has invalid Jwt.");
 
-        public static ErrorResult HasExpired => ErrorResult
+        public static IError HasExpired => ErrorResult
             .Failure(
                 HttpStatusCode.Unauthorized,
                 "RefreshToken.HasExpired",
                 "Refresh token has expired.");
 
-        public static ErrorResult NotFound => ErrorResult
+        public static IError NotFound => ErrorResult
             .NotFound(
                 HttpStatusCode.Unauthorized,
                 "RefreshToken.NotFound",
                 "Refresh token not found.");
 
-        public static ErrorResult HasBeenUsed => ErrorResult
+        public static IError HasBeenUsed => ErrorResult
             .Failure(
                 HttpStatusCode.Unauthorized,
                 "RefreshToken.HasBeenUsed",
                 "Refresh token has been used.");
 
-        public static ErrorResult HasBeenInvalidated => ErrorResult
+        public static IError HasBeenInvalidated => ErrorResult
             .Validation(
                 HttpStatusCode.Unauthorized,
                 "RefreshToken.HasBeenInvalidated",

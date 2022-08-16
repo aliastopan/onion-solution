@@ -55,12 +55,9 @@ internal sealed class JwtProvider : IJwtService
 
     public string GenerateJwt(ClaimsPrincipal principal, out User user)
     {
-        var userId = principal.Claims.Single(x => x.Type == JwtClaimTypes.Sub).Value;
-        user = _dbContext.Users.Find(Guid.Parse(userId))!;
-
-        if(user is null)
-            return null!;
-
+        var sub = principal.Claims.Single(x => x.Type == JwtClaimTypes.Sub).Value;
+        var userId = Guid.Parse(sub);
+        user = _dbContext.Users.Find(userId)!;
         return GenerateJwt(user);
     }
 
@@ -98,11 +95,17 @@ internal sealed class JwtProvider : IJwtService
     }
 
     // STEP 1
-    private static ISubject ValidatePrincipal(ClaimsPrincipal principal)
+    private ISubject ValidatePrincipal(ClaimsPrincipal principal)
     {
         return Assertive.Result().Assert(ctx =>
         {
             ctx.Should.NotNull(principal).WithError(Error.Jwt.InvalidPrincipal);
+        })
+        .Assert(ctx =>
+        {
+            var sub = principal.Claims.Single(x => x.Type == JwtClaimTypes.Sub).Value;
+            var any = _dbContext.Users.Any(x => x.Id == Guid.Parse(sub));
+            ctx.Should.Satisfy(any).WithError(Error.Jwt.InvalidPrincipal);
         });
     }
 

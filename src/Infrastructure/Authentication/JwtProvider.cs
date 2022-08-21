@@ -84,14 +84,14 @@ internal sealed class JwtProvider : IJwtService
         var step1 = ValidatePrincipal(principal);
         var step2 = ValidateJwt(step1, principal);
         var step3 = ValidateRefreshToken(step2, principal, refreshToken);
-        return step3
-            .Override<(string jwt, string refreshToken)>()
-            .Resolve(_ =>
-            {
-                jwt = GenerateJwt(principal, out var user);
-                refreshToken = GenerateRefreshToken(jwt, user).Token;
-                return (jwt, refreshToken);
-            });
+        var step4 = step3.Override<(string jwt, string refreshToken)>();
+        var final = step4.Resolve(_ =>
+        {
+            jwt = GenerateJwt(principal, out var user);
+            refreshToken = GenerateRefreshToken(jwt, user).Token;
+            return (jwt, refreshToken);
+        });
+        return final;
     }
 
     // STEP 1
